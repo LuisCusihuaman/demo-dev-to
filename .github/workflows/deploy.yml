@@ -1,23 +1,24 @@
 name: CD Stage
-on:
-    push:
-        branches:
-            - "QA"
-            - "!master"
+'on':
+  push:
+    branches:
+      - QA
+      - '!master'
 jobs:
-    deploy:
-        runs-on: ubuntu-20.04
-        env:
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        steps:
-            - uses: actions/checkout@v2
-            - name: Deploy QA
-              uses: reggionick/s3-deploy@v3
-              with:
-                  folder: .
-                  bucket: ${{ secrets.S3_BUCKET }}
-                  bucket-region: ${{ secrets.S3_BUCKET_REGION }}
-                  delete-removed: true
-                  no-cache: true
-                  private: true
+  deploy:
+    runs-on: ubuntu-20.04
+    env:
+      AWS_ACCESS_KEY_ID: '${{ secrets.AWS_ACCESS_KEY_ID }}'
+      AWS_SECRET_ACCESS_KEY: '${{ secrets.AWS_SECRET_ACCESS_KEY }}'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Deploy QA
+        uses: reggionick/s3-deploy@v3
+        with:
+          folder: .
+          bucket: '${{ secrets.S3_BUCKET }}'
+          bucket-region: '${{ secrets.S3_BUCKET_REGION }}'
+          delete-removed: true
+          no-cache: true
+          private: true
+          

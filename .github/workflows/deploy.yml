@@ -1,6 +1,7 @@
+#.github/workflows/react_deploy.yaml
 name: CD Stage
-'on':
-  push:
+on:
+  push: 
     branches:
       - QA
       - '!master'
@@ -12,10 +13,27 @@ jobs:
       AWS_SECRET_ACCESS_KEY: '${{ secrets.AWS_SECRET_ACCESS_KEY }}'
     steps:
       - uses: actions/checkout@v2
+      - name: Set up nodejs 14 LTS
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Cache node_modules
+      - uses: actions/cache@v2.0.0
+        with:
+          path: node_modules
+          key: >-
+            ${{ runner.os }}-node-${{ env.cache-name }}-${{
+            hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ env.cache-name }}-
+            ${{ runner.os }}-node-
+            ${{ runner.os }}-
+      - name: ⛏ Building
+        run: npm install && npm run build
       - name: Deploy QA
         uses: reggionick/s3-deploy@v3
         with:
-          folder: .
+          folder: build
           bucket: '${{ secrets.S3_BUCKET }}'
           bucket-region: '${{ secrets.S3_BUCKET_REGION }}'
           delete-removed: true
